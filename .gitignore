@@ -1,2 +1,5 @@
 .DS_Store
 pull_locales_login.rb
+vendor/
+node_modules/
+*.old

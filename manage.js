@@ -48,7 +48,7 @@ function createStyleElement(style) {
 		homepage.setAttribute("href", style.url);
 		homepage.setAttribute("target", "_blank");
 		var homepageImg = document.createElement("img");
-		homepageImg.src = "world_go.png";
+		homepageImg.src = "images/world_go.png";
 		homepageImg.alt = "*";
 		homepage.appendChild(homepageImg);
 		styleName.appendChild(document.createTextNode(" " ));

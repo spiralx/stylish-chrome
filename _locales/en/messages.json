@@ -145,7 +145,7 @@
 		"description": "Go to line or line:column on Ctrl-G in style code editor"
 	},
 	"editStyleHeading": {
-		"message": "Edit Style",
+		"message": "Style editor",
 		"description": "Title of the page for editing styles"
 	},
 	"editStyleLabel": {
@@ -222,7 +222,7 @@
 		"description": "Label for filters container"
 	},
 	"manageHeading": {
-		"message": "Installed Styles",
+		"message": "Style Manager",
 		"description": "Heading for the manage page"
 	},
 	"manageOnlyEnabled": {

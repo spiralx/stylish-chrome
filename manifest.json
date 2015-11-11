@@ -1,13 +1,13 @@
 {
+	"manifest_version": 2,
 	"name": "Stylish",
-	"version": "1.4.0",
+	"version": "1.9.0",
 	"description": "__MSG_description__",
 	"homepage_url": "https://userstyles.org",
-	"manifest_version": 2,
 	"icons": {
-		"16": "16.png",
-		"48": "48.png",
-		"128": "128.png"
+		"16": "images/16.png",
+		"48": "images/48.png",
+		"128": "images/128.png"
 	},
 	"permissions": [
 		"tabs",
@@ -19,33 +19,42 @@
 	"background": {
 		"page": "background.html"
 	},
+	"options_page": "manage.html",
 	"commands": {
-	  "openManage": {
-		"description": "__MSG_openManage__"
-	  },
-	  "styleDisableAll": {
-		"description": "__MSG_disableAllStyles__"
-	  }
+		"openManage": {
+			"description": "__MSG_openManage__"
+		},
+		"styleDisableAll": {
+			"description": "__MSG_disableAllStyles__"
+		}
 	},
 	"content_scripts": [
 		{
-			"matches": ["<all_urls>"],
+			"matches": [
+				"<all_urls>"
+			],
 			"run_at": "document_start",
 			"all_frames": true,
-			"js": ["apply.js"]
+			"js": [
+				"apply.js"
+			]
 		},
 		{
-			"matches": ["http://userstyles.org/*", "https://userstyles.org/*"],
+			"matches": [
+				"http://userstyles.org/*",
+				"https://userstyles.org/*"
+			],
 			"run_at": "document_end",
 			"all_frames": false,
-			"js": ["install.js"]
+			"js": [
+				"install.js"
+			]
 		}
 	],
-	"options_page": "manage.html",
 	"browser_action": {
 		"default_icon": {
-			"19": "19w.png",
-			"38": "38w.png"
+			"19": "images/19w.png",
+			"38": "images/38w.png"
 		},
 		"default_title": "Stylish",
 		"default_popup": "popup.html"

@@ -1,0 +1,30 @@
+{
+  "name": "stylish-chrome",
+  "version": "1.4.0",
+  "homepage": "https://github.com/spiralx/stylish-chrome",
+  "authors": [
+    "James Skinner <spiralx@gmail.com>"
+  ],
+  "description": "A user style manager for Google Chrome and Opera",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "stylish",
+    "userstyles",
+    "customisation"
+  ],
+  "license": "GPL3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "codemirror": "~5.8.0",
+    "csslint": "CSSLint/csslint#~0.10.0",
+    "js-beautify": "~1.5.10"
+  }
+}

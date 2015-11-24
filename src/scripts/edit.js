@@ -1,36 +1,7 @@
-"use strict";
+'use strict';
 
-var styleId = null;
-var dirty = {};       // only the actually dirty items here
-var editors = [];     // array of all CodeMirror instances
-var saveSizeOnClose;
-var useHistoryBack;   // use browser history back when "back to manage" is clicked
 
-// direct & reverse mapping of @-moz-document keywords and internal property names
-var propertyToCss = {urls: "url", urlPrefixes: "url-prefix", domains: "domain", regexps: "regexp"};
-var CssToProperty = {"url": "urls", "url-prefix": "urlPrefixes", "domain": "domains", "regexp": "regexps"};
-
-// make querySelectorAll enumeration code readable
-["forEach", "some", "indexOf"].forEach(function(method) {
-  NodeList.prototype[method]= Array.prototype[method];
-});
-
-// Chrome pre-34
-Element.prototype.matches = Element.prototype.matches || Element.prototype.webkitMatchesSelector;
-
-// Chrome pre-41 polyfill
-Element.prototype.closest = Element.prototype.closest || function(selector) {
-  for (var e = this; e && !e.matches(selector); e = e.parentElement) {}
-  return e;
-};
-
-Array.prototype.rotate = function(amount) { // negative amount == rotate left
-  var r = this.slice(-amount, this.length);
-  Array.prototype.push.apply(r, this.slice(0, this.length - r.length));
-  return r;
-}
-
-Object.defineProperty(Array.prototype, "last", {get: function() { return this[this.length - 1]; }});
+// ------------------------------------------------------------
 
 // reroute handling to nearest editor when keypress resolves to one of these commands
 var hotkeyRerouter = {
@@ -59,12 +30,14 @@ var hotkeyRerouter = {
   }
 };
 
+
 function onChange(event) {
   var node = event.target;
   if ("savedValue" in node) {
     var currentValue = "checkbox" === node.type ? node.checked : node.value;
     setCleanItem(node, node.savedValue === currentValue);
-  } else {
+  }
+  else {
     // the manually added section's applies-to is dirty only when the value is non-empty
     setCleanItem(node, node.localName != "input" || !node.value.trim());
     delete node.savedValue; // only valid when actually saved
@@ -72,10 +45,12 @@ function onChange(event) {
   updateTitle();
 }
 
+
 // Set .dirty on stylesheet contributors that have changed
 function setDirtyClass(node, isDirty) {
   node.classList.toggle("dirty", isDirty);
 }
+
 
 function setCleanItem(node, isClean) {
   if (!node.id) {
@@ -97,6 +72,7 @@ function setCleanItem(node, isClean) {
   setDirtyClass(node, !isClean);
 }
 
+
 function isCleanGlobal() {
   var clean = Object.keys(dirty).length == 0;
   setDirtyClass(document.body, !clean);
@@ -104,10 +80,12 @@ function isCleanGlobal() {
   return clean;
 }
 
+
 function setCleanGlobal() {
   document.querySelectorAll("#header, #sections > div").forEach(setCleanSection);
   dirty = {}; // forget the dirty applies-to ids from a deleted section after the style was saved
 }
+
 
 function setCleanSection(section) {
   section.querySelectorAll(".style-contributor").forEach(function(node) { setCleanItem(node, true) });
@@ -120,12 +98,14 @@ function setCleanSection(section) {
   }
 }
 
+
 function initCodeMirror() {
   var CM = CodeMirror;
   var isWindowsOS = navigator.appVersion.indexOf("Windows") > 0;
 
   // default option values
   var userOptions = prefs.getPref("editor.options");
+
   var stylishOptions = {
     mode: 'css',
     lineNumbers: true,
@@ -143,6 +123,7 @@ function initCodeMirror() {
       "Alt-PageUp": "prevEditor"
     }
   }
+
   shallowMerge(stylishOptions, CM.defaults);
   shallowMerge(userOptions, CM.defaults);
 
@@ -158,23 +139,27 @@ function initCodeMirror() {
   // "basic" keymap only has basic keys by design, so we skip it
 
   var extraKeysCommands = {};
+
   if (userOptions && typeof userOptions.extraKeys == "object") {
     Object.keys(userOptions.extraKeys).forEach(function(key) {
       extraKeysCommands[userOptions.extraKeys[key]] = true;
     });
   }
+
   if (!extraKeysCommands.jumpToLine) {
     CM.keyMap.sublime["Ctrl-G"] = "jumpToLine";
     CM.keyMap.emacsy["Ctrl-G"] = "jumpToLine";
     CM.keyMap.pcDefault["Ctrl-J"] = "jumpToLine";
     CM.keyMap.macDefault["Cmd-J"] = "jumpToLine";
   }
+
   if (!extraKeysCommands.autocomplete) {
     CM.keyMap.pcDefault["Ctrl-Space"] = "autocomplete"; // will be used by "sublime" on PC via fallthrough
     CM.keyMap.macDefault["Alt-Space"] = "autocomplete"; // OSX uses Ctrl-Space and Cmd-Space for something else
     CM.keyMap.emacsy["Alt-/"] = "autocomplete"; // copied from "emacs" keymap
     // "vim" and "emacs" define their own autocomplete hotkeys
   }
+
   if (!extraKeysCommands.blockComment) {
     CM.keyMap.sublime["Shift-Ctrl-/"] = "blockComment";
   }
@@ -217,6 +202,7 @@ function initCodeMirror() {
   CM.getOption = function (o) {
     return CodeMirror.defaults[o];
   }
+
   CM.setOption = function (o, v) {
     CodeMirror.defaults[o] = v;
     editors.forEach(function(editor) {
@@ -233,11 +219,14 @@ function initCodeMirror() {
     function optionsHtmlFromArray(options) {
       return options.map(function(opt) { return "<option>" + opt + "</option>"; }).join("");
     }
+
     var themeControl = document.getElementById("editor.theme");
     var bg = chrome.extension.getBackgroundPage();
+
     if (bg && bg.codeMirrorThemes) {
       themeControl.innerHTML = optionsHtmlFromArray(bg.codeMirrorThemes);
-    } else {
+    }
+    else {
       // Chrome is starting up and shows our edit.html, but the background page isn't loaded yet
       themeControl.innerHTML = optionsHtmlFromArray([theme == "default" ? t("defaultTheme") : theme]);
       getCodeMirrorThemes(function(themes) {
@@ -245,28 +234,37 @@ function initCodeMirror() {
         themeControl.selectedIndex = Math.max(0, themes.indexOf(theme));
       });
     }
+
     document.getElementById("editor.keyMap").innerHTML = optionsHtmlFromArray(Object.keys(CM.keyMap).sort());
+
     var controlPrefs = {};
+
     document.querySelectorAll("#options *[data-option][id^='editor.']").forEach(function(option) {
       controlPrefs[option.id] = CM.defaults[option.dataset.option];
     });
+
     document.getElementById("options").addEventListener("change", acmeEventListener, false);
+
     loadPrefs(controlPrefs);
   });
 
   hotkeyRerouter.setState(true);
 }
-initCodeMirror();
+
+
 
 function acmeEventListener(event) {
   var el = event.target;
   var option = el.dataset.option;
+
   //console.log("acmeEventListener heard %s on %s", event.type, el.id);
   if (!option) {
     console.error("acmeEventListener: no 'cm_option' %O", el);
     return;
   }
+
   var value = el.type == "checkbox" ? el.checked : el.value;
+
   switch (option) {
     case "tabSize":
       CodeMirror.setOption("indentUnit", value);
@@ -301,8 +299,10 @@ function acmeEventListener(event) {
       })();
       return;
   }
+
   CodeMirror.setOption(option, value);
 }
+
 
 // replace given textarea with the CodeMirror editor
 function setupCodeMirror(textarea, index) {
@@ -313,10 +313,12 @@ function setupCodeMirror(textarea, index) {
     editors.lastActive = cm;
     hotkeyRerouter.setState(true);
   });
+
   cm.on("focus", hotkeyRerouter.setState.bind(null, false));
 
   var resizeGrip = cm.display.wrapper.appendChild(document.createElement("div"));
   resizeGrip.className = "resize-grip";
+
   resizeGrip.addEventListener("mousedown", function(e) {
     e.preventDefault();
     var cm = e.target.parentNode.CodeMirror;
@@ -332,10 +334,12 @@ function setupCodeMirror(textarea, index) {
       document.removeEventListener("mousemove", resize);
     });
   });
+
   // resizeGrip has enough space when scrollbars.horiz is visible
   if (cm.display.scrollbars.horiz.style.display != "") {
     cm.display.scrollbars.vert.style.marginBottom = "0";
   }
+
   // resizeGrip space adjustment in case a long line was entered/deleted by a user
   new MutationObserver(function(mutations) {
     var hScrollbar = mutations[0].target;
@@ -351,6 +355,7 @@ function setupCodeMirror(textarea, index) {
   return cm;
 }
 
+
 function indicateCodeChange(cm) {
   var section = getSectionForCodeMirror(cm);
   setCleanItem(section, cm.isClean(section.savedValue));
@@ -358,17 +363,21 @@ function indicateCodeChange(cm) {
   updateLintReport(cm);
 }
 
+
 function getSectionForCodeMirror(cm) {
   return cm.display.wrapper.parentNode;
 }
+
 
 function getSectionForChild(e) {
   return e.closest("#sections > div");
 }
 
+
 function getSections() {
   return document.querySelectorAll("#sections > div");
 }
+
 
 function getCodeMirrorForSection(section) {
   // #header section has no codemirror
@@ -376,47 +385,6 @@ function getCodeMirrorForSection(section) {
   return wrapper && wrapper.CodeMirror;
 }
 
-// remind Chrome to repaint a previously invisible editor box by toggling any element's transform
-// this bug is present in some versions of Chrome (v37-40 or something)
-document.addEventListener("scroll", function(event) {
-  var style = document.getElementById("name").style;
-  style.webkitTransform = style.webkitTransform ? "" : "scale(1)";
-});
-
-// Shift-Ctrl-Wheel scrolls entire page even when mouse is over a code editor
-document.addEventListener("wheel", function(event) {
-  if (event.shiftKey && event.ctrlKey && !event.altKey && !event.metaKey) {
-    // Chrome scrolls horizontally when Shift is pressed but on some PCs this might be different
-    window.scrollBy(0, event.deltaX || event.deltaY);
-    event.preventDefault();
-  }
-});
-
-chrome.tabs.query({currentWindow: true}, function(tabs) {
-  var windowId = tabs[0].windowId;
-  if (prefs.getPref("openEditInWindow")) {
-    if (tabs.length == 1 && window.history.length == 1) {
-      chrome.windows.getAll(function(windows) {
-        if (windows.length > 1) {
-          sessionStorageHash("saveSizeOnClose").set(windowId, true);
-          saveSizeOnClose = true;
-        }
-      });
-    } else {
-      saveSizeOnClose = sessionStorageHash("saveSizeOnClose").value[windowId];
-    }
-  }
-  chrome.tabs.onRemoved.addListener(function(tabId, info) {
-    sessionStorageHash("manageStylesHistory").unset(tabId);
-    if (info.windowId == windowId && info.isWindowClosing) {
-      sessionStorageHash("saveSizeOnClose").unset(windowId);
-    }
-  });
-});
-
-getActiveTab(function(tab) {
-  useHistoryBack = sessionStorageHash("manageStylesHistory").value[tab.id] == location.href;
-});
 
 function goBackToManage(event) {
   if (useHistoryBack) {
@@ -426,50 +394,42 @@ function goBackToManage(event) {
   }
 }
 
-window.onbeforeunload = function() {
-  if (saveSizeOnClose) {
-    prefs.setPref("windowPosition", {
-      left: screenLeft,
-      top: screenTop,
-      width: outerWidth,
-      height: outerHeight
-    });
-  }
-  document.activeElement.blur();
-  if (isCleanGlobal()) {
-    return;
-  }
-  updateLintReport(null, 0);
-  return confirm(t('styleChangesNotSaved'));
-}
 
 function addAppliesTo(list, name, value) {
   var showingEverything = list.querySelector(".applies-to-everything") != null;
+
   // blow away "Everything" if it's there
   if (showingEverything) {
     list.removeChild(list.firstChild);
   }
+
   var e;
+
   if (name && value) {
     e = template.appliesTo.cloneNode(true);
     e.querySelector("[name=applies-type]").value = name;
     e.querySelector("[name=applies-value]").value = value;
     e.querySelector(".remove-applies-to").addEventListener("click", removeAppliesTo, false);
-  } else if (showingEverything || list.hasChildNodes()) {
+  }
+  else if (showingEverything || list.hasChildNodes()) {
     e = template.appliesTo.cloneNode(true);
     if (list.hasChildNodes()) {
       e.querySelector("[name=applies-type]").value = list.querySelector("li:last-child [name='applies-type']").value;
     }
     e.querySelector(".remove-applies-to").addEventListener("click", removeAppliesTo, false);
-  } else {
+  }
+  else {
     e = template.appliesToEverything.cloneNode(true);
   }
+
   e.querySelector(".add-applies-to").addEventListener("click", function() {addAppliesTo(this.parentNode.parentNode)}, false);
   list.appendChild(e);
 }
 
+
 function addSection(event, section) {
   var div = template.section.cloneNode(true);
+
   div.querySelector(".applies-to-help").addEventListener("click", showAppliesToHelp, false);
   div.querySelector(".remove-section").addEventListener("click", removeSection, false);
   div.querySelector(".add-section").addEventListener("click", addSection, false);
@@ -498,6 +458,7 @@ function addSection(event, section) {
   appliesTo.addEventListener("input", onChange);
 
   var sections = document.getElementById("sections");
+
   if (event) {
     var clickedSection = event.target.parentNode;
     sections.insertBefore(div, clickedSection.nextElementSibling);
@@ -506,7 +467,8 @@ function addSection(event, section) {
     makeSectionVisible(cm);
     cm.focus()
     renderLintReport();
-  } else {
+  }
+  else {
     sections.appendChild(div);
     setupCodeMirror(codeElement);
   }
@@ -514,6 +476,7 @@ function addSection(event, section) {
   setCleanSection(div);
   return div;
 }
+
 
 function removeAppliesTo(event) {
   var appliesTo = event.target.parentNode,
@@ -524,6 +487,7 @@ function removeAppliesTo(event) {
   }
 }
 
+
 function removeSection(event) {
   var section = event.target.parentNode;
   var cm = getCodeMirrorForSection(section);
@@ -531,6 +495,7 @@ function removeSection(event) {
   editors.splice(editors.indexOf(cm), 1);
   renderLintReport();
 }
+
 
 function removeAreaAndSetDirty(area) {
   area.querySelectorAll('.style-contributor').some(function(node) {
@@ -548,6 +513,7 @@ function removeAreaAndSetDirty(area) {
   area.parentNode.removeChild(area);
 }
 
+
 function makeSectionVisible(cm) {
   var section = getSectionForCodeMirror(cm);
   var bounds = section.getBoundingClientRect();
@@ -560,6 +526,7 @@ function makeSectionVisible(cm) {
   }
 }
 
+
 function setupGlobalSearch() {
   var originalCommand = {
     find: CodeMirror.commands.find,
@@ -567,6 +534,7 @@ function setupGlobalSearch() {
     findPrev: CodeMirror.commands.findPrev,
     replace: CodeMirror.commands.replace
   }
+
   var originalOpenDialog = CodeMirror.prototype.openDialog;
   var originalOpenConfirm = CodeMirror.prototype.openConfirm;
 
@@ -611,7 +579,6 @@ function setupGlobalSearch() {
       cm.focus();
     }
     return cm;
-
   }
 
   function find(activeCM) {
@@ -641,6 +608,7 @@ function setupGlobalSearch() {
       find(activeCM);
       return;
     }
+
     var pos = activeCM.getCursor(reverse ? "from" : "to");
     activeCM.setSelection(activeCM.getCursor()); // clear the selection, don't move the cursor
 
@@ -746,6 +714,7 @@ function setupGlobalSearch() {
       };
       originalCommand.replace(cm, all);
     }
+
     function doConfirm(cm) {
       var wrapAround = false;
       var origPos = cm.getCursor();
@@ -786,6 +755,7 @@ function setupGlobalSearch() {
   CodeMirror.commands.replaceAll = replaceAll;
 }
 
+
 function jumpToLine(cm) {
   var cur = cm.getCursor();
   cm.openDialog(template.jumpToLine.innerHTML, function(str) {
@@ -796,18 +766,21 @@ function jumpToLine(cm) {
   }, {value: cur.line+1});
 }
 
+
 function nextPrevEditor(cm, direction) {
   cm = editors[(editors.indexOf(cm) + direction + editors.length) % editors.length];
   makeSectionVisible(cm);
   cm.focus();
 }
 
+
 function getEditorInSight(nearbyElement) {
   // priority: 1. associated CM for applies-to element 2. last active if visible 3. first visible
   var cm;
   if (nearbyElement && nearbyElement.className.indexOf("applies-") >= 0) {
     cm = getCodeMirrorForSection(getSectionForChild(nearbyElement));
-  } else {
+  }
+  else {
     cm = editors.lastActive;
   }
   if (!cm || offscreenDistance(cm) > 0) {
@@ -819,20 +792,25 @@ function getEditorInSight(nearbyElement) {
       makeSectionVisible(cm)
     }
   }
+
   return cm;
 
   function offscreenDistance(cm) {
     var LINES_VISIBLE = 2; // closest editor should have at least # lines visible
     var bounds = getSectionForCodeMirror(cm).getBoundingClientRect();
+
     if (bounds.top < 0) {
       return -bounds.top;
-    } else if (bounds.top < window.innerHeight - cm.defaultTextHeight() * LINES_VISIBLE) {
+    }
+    else if (bounds.top < window.innerHeight - cm.defaultTextHeight() * LINES_VISIBLE) {
       return 0;
-    } else {
+    }
+    else {
       return bounds.top - bounds.height;
     }
   }
 }
+
 
 function updateLintReport(cm, delay) {
   if (delay == 0) {
@@ -840,6 +818,7 @@ function updateLintReport(cm, delay) {
     update.call(cm);
     return;
   }
+
   if (delay > 0) {
     // give csslint some time to find the issues, e.g. 500 (1/10 of our default 5s)
     // by settings its internal delay to 1ms and restoring it back later
@@ -851,6 +830,7 @@ function updateLintReport(cm, delay) {
     lintOpt.delay = 1;
     return;
   }
+
   // user is editing right now: postpone updating the report for the new issues (default: 500ms lint + 4500ms)
   // or update it as soon as possible (default: 500ms lint + 100ms) in case an existing issue was just fixed
   var state = cm.state.lint;
@@ -862,23 +842,29 @@ function updateLintReport(cm, delay) {
     var scope = this ? [this] : editors;
     var changed = false;
     var fixedOldIssues = false;
+
     scope.forEach(function(cm) {
       var state = cm.state.lint;
       var oldMarkers = state.markedLast || {};
       var newMarkers = {};
+
       var html = state.marked.length == 0 ? "" : "<tbody>" +
         state.marked.map(function(mark) {
           var info = mark.__annotation;
           var isActiveLine = info.from.line == cm.getCursor().line;
           var pos = isActiveLine ? "cursor" : (info.from.line + "," + info.from.ch);
           var message = escapeHtml(info.message.replace(/ at line \d.+$/, ""));
+
           if (message.length > 100) {
             message = message.substr(0, 100) + "...";
           }
+
           if (isActiveLine || oldMarkers[pos] == message) {
             delete oldMarkers[pos];
           }
+
           newMarkers[pos] = message;
+
           return "<tr class='" + info.severity + "'>" +
             "<td role='severity' class='CodeMirror-lint-marker-" + info.severity + "'>" +
               info.severity + "</td>" +
@@ -887,13 +873,16 @@ function updateLintReport(cm, delay) {
             "<td role='col'>" + (info.from.ch+1) + "</td>" +
             "<td role='message'>" + message + "</td></tr>";
         }).join("") + "</tbody>";
+
       state.markedLast = newMarkers;
       fixedOldIssues |= state.reportDisplayed && Object.keys(oldMarkers).length > 0;
+
       if (state.html != html) {
         state.html = html;
         changed = true;
       }
     });
+
     if (changed) {
       clearTimeout(state ? state.renderTimeout : undefined);
       if (!state || !state.postponeNewIssues || fixedOldIssues) {
@@ -905,17 +894,20 @@ function updateLintReport(cm, delay) {
       }
     }
   }
+
   function escapeHtml(html) {
     var chars = {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': '&quot;', "'": '&#39;', "/": '&#x2F;'};
     return html.replace(/[&<>"'\/]/g, function(char) { return chars[char] });
   }
 }
 
+
 function renderLintReport(someBlockChanged) {
   var container = document.getElementById("lint");
   var content = container.children[1];
   var label = t("sectionCode");
   var newContent = content.cloneNode(false);
+
   editors.forEach(function(cm, index) {
     if (cm.state.lint.html) {
       var newBlock = newContent.appendChild(document.createElement("table"));
@@ -929,6 +921,7 @@ function renderLintReport(someBlockChanged) {
       cm.state.lint.reportDisplayed = blockChanged;
     }
   });
+
   if (someBlockChanged || newContent.children.length != content.children.length) {
     container.replaceChild(newContent, content);
     container.style.display = newContent.children.length ? "block" : "none";
@@ -936,8 +929,10 @@ function renderLintReport(someBlockChanged) {
   }
 }
 
+
 function resizeLintReport(event, content) {
   content = content || document.getElementById("lint").children[1];
+
   if (content.children.length) {
     var header = document.getElementById("header");
     var headerHeight = parseFloat(getComputedStyle(header).height);
@@ -948,6 +943,7 @@ function resizeLintReport(event, content) {
     }
   }
 }
+
 
 function gotoLintIssue(event) {
   var issue = event.target.closest("tr");
@@ -962,6 +958,7 @@ function gotoLintIssue(event) {
     ch: parseInt(issue.querySelector("td[role='col']").textContent) - 1
   });
 }
+
 
 function beautify(event) {
   if (exports.css_beautify) { // thanks to csslint's definition of 'exports'
@@ -1042,7 +1039,6 @@ function beautify(event) {
   }
 }
 
-window.addEventListener("load", init, false);
 
 function init() {
   var params = getParams();
@@ -1077,6 +1073,7 @@ function init() {
   }
 }
 
+
 function initWithStyle(style) {
   document.getElementById("name").value = style.name;
   document.getElementById("enabled").checked = style.enabled == "true";
@@ -1105,6 +1102,7 @@ function initWithStyle(style) {
   }
 }
 
+
 function initHooks() {
   document.querySelectorAll("#header .style-contributor").forEach(function(node) {
     node.addEventListener("change", onChange);
@@ -1126,6 +1124,7 @@ function initHooks() {
   setCleanGlobal();
   updateTitle();
 }
+
 
 function maximizeCodeHeight(sectionDiv, isLast) {
   var cm = getCodeMirrorForSection(sectionDiv);
@@ -1171,6 +1170,7 @@ function maximizeCodeHeight(sectionDiv, isLast) {
   });
 }
 
+
 function updateTitle() {
   var DIRTY_TITLE = "* $";
 
@@ -1179,6 +1179,7 @@ function updateTitle() {
   var title = styleId === null ? t("addStyleTitle") : t('editStyleTitle', [name]);
   document.title = clean ? title : DIRTY_TITLE.replace("$", title);
 }
+
 
 function validate() {
   var name = document.getElementById("name").value;
@@ -1211,6 +1212,7 @@ function validate() {
   }
   return null;
 }
+
 
 function save() {
   updateLintReport(null, 0);
@@ -1251,6 +1253,7 @@ function getSectionsHashes() {
   return sections;
 }
 
+
 function getMeta(e) {
   var meta = {};
   e.querySelector(".applies-to-list").childNodes.forEach(function(li) {
@@ -1279,11 +1282,13 @@ function saveComplete(style) {
   updateTitle();
 }
 
+
 function showMozillaFormat() {
   var popup = showCodeMirrorPopup(t("styleToMozillaFormatTitle"), "", {readOnly: true});
   popup.codebox.setValue(toMozillaFormat());
   popup.codebox.execCommand("selectAll");
 }
+
 
 function toMozillaFormat() {
   return getSectionsHashes().map(function(section) {
@@ -1298,6 +1303,7 @@ function toMozillaFormat() {
     return cssMds.length ? "@-moz-document " + cssMds.join(", ") + " {\n" + section.code + "\n}" : section.code;
   }).join("\n\n");
 }
+
 
 function fromMozillaFormat() {
   var popup = showCodeMirrorPopup(t("styleFromMozillaFormatPrompt"), tHTML("<div>\
@@ -1421,6 +1427,7 @@ function fromMozillaFormat() {
       setCleanItem(addSection(null, section), false);
     }
   }
+
   function backtrackTo(parser, tokenType, startEnd) {
     var tokens = parser._tokenStream._lt;
     for (var i = tokens.length - 2; i >= 0; --i) {
@@ -1429,9 +1436,11 @@ function fromMozillaFormat() {
       }
     }
   }
+
   function trimNewLines(s) {
     return s.replace(/^[\s\n]+/, "").replace(/[\s\n]+$/, "");
   }
+
   function addContinuation(section, addendum) {
     section.code = section.code && addendum
       ? section.code + "\n/**************************/\n" + addendum
@@ -1440,17 +1449,21 @@ function fromMozillaFormat() {
   }
 }
 
+
 function showSectionHelp() {
   showHelp(t("styleSectionsTitle"), t("sectionHelp"));
 }
+
 
 function showAppliesToHelp() {
   showHelp(t("appliesLabel"), t("appliesHelp"));
 }
 
+
 function showToMozillaHelp() {
   showHelp(t("styleMozillaFormatHeading"), t("styleToMozillaFormatHelp"));
 }
+
 
 function showKeyMapHelp() {
   var keyMap = mergeKeyMaps({}, prefs.getPref("editor.keyMap"), CodeMirror.defaults.extraKeys);
@@ -1531,6 +1544,7 @@ function showKeyMapHelp() {
   }
 }
 
+
 function showLintHelp() {
   showHelp(t("issues"), t("issuesHelp") + "<ul>" +
     CSSLint.getRules().map(function(rule) {
@@ -1538,6 +1552,7 @@ function showLintHelp() {
     }).join("") + "</ul>"
   );
 }
+
 
 function showHelp(title, text) {
   var div = document.getElementById("help-popup");
@@ -1562,6 +1577,7 @@ function showHelp(title, text) {
   }
 }
 
+
 function showCodeMirrorPopup(title, html, options) {
   var popup = showHelp(title, html);
   popup.classList.add("big");
@@ -1584,6 +1600,7 @@ function showCodeMirrorPopup(title, html, options) {
   return popup;
 }
 
+
 function getParams() {
   var params = {};
   var urlParts = location.href.split("?", 2);
@@ -1596,6 +1613,21 @@ function getParams() {
   });
   return params;
 }
+
+
+function stringAsRegExp(s, flags) {
+  return new RegExp(s.replace(/[{}()\[\]\/\\.+?^$:=*!|]/g, "\\$&"), flags);
+}
+
+
+function getComputedHeight(el) {
+  var compStyle = getComputedStyle(el);
+  return el.getBoundingClientRect().height +
+    parseFloat(compStyle.marginTop) + parseFloat(compStyle.marginBottom);
+}
+
+
+// ------------------------------------------------------------
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
   switch (request.method) {
@@ -1617,12 +1649,121 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
-function stringAsRegExp(s, flags) {
-  return new RegExp(s.replace(/[{}()\[\]\/\\.+?^$:=*!|]/g, "\\$&"), flags);
+
+// ------------------------------------------------------------
+
+// make querySelectorAll enumeration code readable
+["forEach", "some", "indexOf"].forEach(function(method) {
+  NodeList.prototype[method]= Array.prototype[method];
+});
+
+
+// Chrome pre-34
+Element.prototype.matches = Element.prototype.matches || Element.prototype.webkitMatchesSelector;
+
+
+// Chrome pre-41 polyfill
+Element.prototype.closest = Element.prototype.closest || function(selector) {
+  for (var e = this; e && !e.matches(selector); e = e.parentElement) {}
+  return e;
+};
+
+
+Array.prototype.rotate = function(amount) { // negative amount == rotate left
+  var r = this.slice(-amount, this.length);
+  Array.prototype.push.apply(r, this.slice(0, this.length - r.length));
+  return r;
 }
 
-function getComputedHeight(el) {
-  var compStyle = getComputedStyle(el);
-  return el.getBoundingClientRect().height +
-    parseFloat(compStyle.marginTop) + parseFloat(compStyle.marginBottom);
+
+Object.defineProperty(Array.prototype, "last", {
+  get: function() {
+    return this[this.length - 1];
+  }
+});
+
+
+// ------------------------------------------------------------
+
+var styleId = null;
+var dirty = {};       // only the actually dirty items here
+var editors = [];     // array of all CodeMirror instances
+var saveSizeOnClose;
+var useHistoryBack;   // use browser history back when "back to manage" is clicked
+
+
+// direct & reverse mapping of @-moz-document keywords and internal property names
+var propertyToCss = { urls: "url", urlPrefixes: "url-prefix", domains: "domain", regexps: "regexp" };
+var CssToProperty = { "url": "urls", "url-prefix": "urlPrefixes", "domain": "domains", "regexp": "regexps" };
+
+
+
+chrome.tabs.query({currentWindow: true}, function(tabs) {
+  var windowId = tabs[0].windowId;
+
+  if (prefs.getPref("openEditInWindow")) {
+    if (tabs.length == 1 && window.history.length == 1) {
+      chrome.windows.getAll(function(windows) {
+        if (windows.length > 1) {
+          sessionStorageHash("saveSizeOnClose").set(windowId, true);
+          saveSizeOnClose = true;
+        }
+      });
+    } else {
+      saveSizeOnClose = sessionStorageHash("saveSizeOnClose").value[windowId];
+    }
+  }
+
+  chrome.tabs.onRemoved.addListener(function(tabId, info) {
+    sessionStorageHash("manageStylesHistory").unset(tabId);
+    if (info.windowId == windowId && info.isWindowClosing) {
+      sessionStorageHash("saveSizeOnClose").unset(windowId);
+    }
+  });
+});
+
+
+getActiveTab(function(tab) {
+  useHistoryBack = sessionStorageHash("manageStylesHistory").value[tab.id] == location.href;
+});
+
+
+// remind Chrome to repaint a previously invisible editor box by toggling any element's transform
+// this bug is present in some versions of Chrome (v37-40 or something)
+document.addEventListener("scroll", function(event) {
+  var style = document.getElementById("name").style;
+  style.webkitTransform = style.webkitTransform ? "" : "scale(1)";
+});
+
+
+// Shift-Ctrl-Wheel scrolls entire page even when mouse is over a code editor
+document.addEventListener("wheel", function(event) {
+  if (event.shiftKey && event.ctrlKey && !event.altKey && !event.metaKey) {
+    // Chrome scrolls horizontally when Shift is pressed but on some PCs this might be different
+    window.scrollBy(0, event.deltaX || event.deltaY);
+    event.preventDefault();
+  }
+});
+
+
+window.onbeforeunload = function() {
+  if (saveSizeOnClose) {
+    prefs.setPref("windowPosition", {
+      left: screenLeft,
+      top: screenTop,
+      width: outerWidth,
+      height: outerHeight
+    });
+  }
+  document.activeElement.blur();
+  if (isCleanGlobal()) {
+    return;
+  }
+  updateLintReport(null, 0);
+  return confirm(t('styleChangesNotSaved'));
 }
+
+
+initCodeMirror();
+
+window.addEventListener("load", init, false);

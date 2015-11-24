@@ -1,4 +1,5 @@
 
+
 function notifyAllTabs(request) {
   chrome.windows.getAll({populate: true}, function(windows) {
     windows.forEach(function(win) {
@@ -8,6 +9,7 @@ function notifyAllTabs(request) {
       });
     });
   });
+
   // notify all open popups
   // use a shallow copy since the original `request` is still being processed
   var reqPopup = {};
@@ -39,6 +41,7 @@ function updateIcon(tab, styles) {
         stylesReceived(styles);
       }
     });
+
     return;
   }
 
@@ -46,7 +49,8 @@ function updateIcon(tab, styles) {
     // if we have access to this, call directly. a page sending a message to itself doesn't seem to work right.
     if (typeof getStyles != "undefined") {
       getStyles({matchUrl: url, enabled: true}, stylesReceived);
-    } else {
+    }
+    else {
       chrome.extension.sendMessage({method: "getStyles", matchUrl: url, enabled: true}, stylesReceived);
     }
   });

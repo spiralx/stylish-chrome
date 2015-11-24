@@ -1,63 +1,63 @@
 {
-	"manifest_version": 2,
-	"name": "Stylish",
-	"version": "1.9.0",
-	"description": "__MSG_description__",
-	"homepage_url": "https://userstyles.org",
-	"icons": {
-		"16": "images/16.png",
-		"48": "images/48.png",
-		"128": "images/128.png"
-	},
-	"permissions": [
-		"tabs",
-		"webNavigation",
-		"contextMenus",
-		"http://userstyles.org/",
-		"https://userstyles.org/"
-	],
-	"background": {
-		"page": "background.html"
-	},
-	"options_page": "manage.html",
-	"commands": {
-		"openManage": {
-			"description": "__MSG_openManage__"
-		},
-		"styleDisableAll": {
-			"description": "__MSG_disableAllStyles__"
-		}
-	},
-	"content_scripts": [
-		{
-			"matches": [
-				"<all_urls>"
-			],
-			"run_at": "document_start",
-			"all_frames": true,
-			"js": [
-				"apply.js"
-			]
-		},
-		{
-			"matches": [
-				"http://userstyles.org/*",
-				"https://userstyles.org/*"
-			],
-			"run_at": "document_end",
-			"all_frames": false,
-			"js": [
-				"install.js"
-			]
-		}
-	],
-	"browser_action": {
-		"default_icon": {
-			"19": "images/19w.png",
-			"38": "images/38w.png"
-		},
-		"default_title": "Stylish",
-		"default_popup": "popup.html"
-	},
-	"default_locale": "en"
+  "manifest_version": 2,
+  "name": "Stylish",
+  "version": "1.9.9",
+  "description": "__MSG_description__",
+  "homepage_url": "https://userstyles.org",
+  "icons": {
+    "16": "images/16.png",
+    "48": "images/48.png",
+    "128": "images/128.png"
+  },
+  "permissions": [
+    "tabs",
+    "webNavigation",
+    "contextMenus",
+    "http://userstyles.org/",
+    "https://userstyles.org/"
+  ],
+  "background": {
+    "page": "src/background.html"
+  },
+  "options_page": "src/manage.html",
+  "commands": {
+    "openManage": {
+      "description": "__MSG_openManage__"
+    },
+    "styleDisableAll": {
+      "description": "__MSG_disableAllStyles__"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "js": [
+        "src/scripts/apply.js"
+      ]
+    },
+    {
+      "matches": [
+        "http://userstyles.org/*",
+        "https://userstyles.org/*"
+      ],
+      "run_at": "document_end",
+      "all_frames": false,
+      "js": [
+        "src/scripts/install.js"
+      ]
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "19": "images/19w.png",
+      "38": "images/38w.png"
+    },
+    "default_title": "Stylish",
+    "default_popup": "src/popup.html"
+  },
+  "default_locale": "en"
 }

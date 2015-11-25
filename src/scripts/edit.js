@@ -422,7 +422,10 @@ function addAppliesTo(list, name, value) {
     e = template.appliesToEverything.cloneNode(true);
   }
 
-  e.querySelector(".add-applies-to").addEventListener("click", function() {addAppliesTo(this.parentNode.parentNode)}, false);
+  e.querySelector(".add-applies-to").addEventListener("click", function() {
+    addAppliesTo(this.parentNode.parentNode)
+  }, false);
+
   list.appendChild(e);
 }
 
@@ -450,6 +453,7 @@ function addSection(event, section) {
       }
     }
   }
+
   if (!appliesToAdded) {
     addAppliesTo(appliesTo);
   }
@@ -481,6 +485,7 @@ function addSection(event, section) {
 function removeAppliesTo(event) {
   var appliesTo = event.target.parentNode,
       appliesToList = appliesTo.parentNode;
+
   removeAreaAndSetDirty(appliesTo);
   if (!appliesToList.hasChildNodes()) {
     addAppliesTo(appliesToList);
@@ -509,6 +514,7 @@ function removeAreaAndSetDirty(area) {
       setCleanItem(node, true);
     }
   });
+
   updateTitle();
   area.parentNode.removeChild(area);
 }
@@ -517,10 +523,12 @@ function removeAreaAndSetDirty(area) {
 function makeSectionVisible(cm) {
   var section = getSectionForCodeMirror(cm);
   var bounds = section.getBoundingClientRect();
+
   if ((bounds.bottom > window.innerHeight && bounds.top > 0) || (bounds.top < 0 && bounds.bottom < window.innerHeight)) {
     if (bounds.top < 0) {
       window.scrollBy(0, bounds.top - 1);
-    } else {
+    }
+    else {
       window.scrollBy(0, bounds.bottom - window.innerHeight + 1);
     }
   }

@@ -1,0 +1,77 @@
+extends _page
+
+
+block title
+  title(data-text='manageTitle')
+
+
+block append styles
+  link(rel='stylesheet', href='styles/manage.css')
+
+
+block append templates
+  template(data-id='style')
+    div
+      h2.style-name
+
+      p.applies-to
+
+      p.actions
+        a.style-edit-link(href='edit.html?id=')
+          button(data-text='editStyleLabel')
+
+        button.enable(data-text='enableStyleLabel')
+
+        button.disable(data-text='disableStyleLabel')
+
+        button.delete(data-text='deleteStyleLabel')
+
+        button.check-update(data-text='checkForUpdate')
+
+        button.update(data-text='installUpdate')
+
+        span.update-note
+
+
+block append scripts
+  script(src='scripts/manage.js')
+
+
+block content
+  fieldset
+    legend#filters(data-text='manageFilters')
+
+    div
+      input(id='manage.onlyEnabled', type='checkbox')
+      label(id='manage.onlyEnabled-label', for='manage.onlyEnabled', data-text='manageOnlyEnabled')
+
+    div
+      input(id='manage.onlyEdited', type='checkbox')
+      label(id='manage.onlyEdited-label', for='manage.onlyEdited', data-text='manageOnlyEdited')
+
+    div
+      input#search(type='search', data-placeholder='searchStyles')
+
+  p
+    button#check-all-updates(data-text='checkAllUpdates')
+
+  p
+    button#apply-all-updates.hidden(data-text='applyAllUpdates')
+    span#update-all-no-updates.hidden(data-text='updateAllCheckSucceededNoUpdate')
+
+  p
+    a(href='edit.html')
+      button#add-style-label(data-text='addStyleLabel')
+
+  #options
+    h2#options-heading(data-text='optionsHeading')
+
+    div
+      input#show-badge(type='checkbox')
+      label#show-badge-label(for='show-badge', data-text='prefShowBadge')
+
+    div
+      input(id='popup.stylesFirst', type='checkbox')
+      label#stylesFirst-label(for='popup.stylesFirst', data-text='popupStylesFirst')
+
+  #installed

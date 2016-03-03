@@ -28,7 +28,7 @@ function tE(id, key, attr, esc) {
 
 
 function tHTML(html) {
-  var node = document.createElement("div");
+  var node = document.createElement("div")
   node.innerHTML = html.replace(/>\s+</g, '><'); // spaces are removed; use &nbsp; for an explicit space
   tNodeList(node.querySelectorAll("*"));
   var child = node.removeChild(node.firstElementChild);
@@ -92,10 +92,52 @@ function tDocLoader() {
   });
 }
 
+// tDocLoader();
+
+
 
 // ------------------------------------------------------------
 
 var template = {};
 
-tDocLoader();
 
+function i18niseAllNodes(root) {
+  root = root || document.documentElement
+
+  const nodes = (root.matches('[data-text]') ? [ root ] : [])
+    .concat([ ...root.querySelectorAll('[data-text]') ])
+
+  nodes.forEach(i18nise)
+
+  return root
+}
+
+
+function i18nise(elem) {
+  const key = elem && (elem.dataset.text || elem.dataset.placeholder)
+
+  if (!key) {
+    return
+  }
+
+  if (elem.dataset.textParams) {
+    elem.textContent = chrome.i18n.getMessage(key, elem.dataset.textParams.split('|'))
+    elem.removeAttribute('data-text-params')
+  }
+  else {
+    elem.textContent = chrome.i18n.getMessage()
+  }
+
+  elem.removeAttribute('data-text')
+}
+
+
+const _templates = new Map()
+
+document.addEventListener("DOMContentLoaded", function() {
+  i18niseAllNodes()
+
+  Array.from(document.querySelectorAll('template')).forEach(tmplNode => {
+    templates.set(tmplNode.dataset.id, i18niseAllNodes(tmplNode.content))
+  })
+})

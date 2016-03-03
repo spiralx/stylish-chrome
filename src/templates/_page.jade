@@ -1,0 +1,24 @@
+//- _page.jade
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+
+    block title
+      title Stylish Chome
+
+    block styles
+      link(rel='stylesheet', href='stylish.css')
+
+  body
+    header
+      h1#manage-heading(i18n-text='manageHeading')
+
+    block content
+
+    block scripts
+      script(src='scripts/localization.js')
+      script(src='scripts/health.js')
+      script(src='scripts/storage.js')
+      script(src='scripts/messaging.js')
+      script(src='scripts/apply.js')

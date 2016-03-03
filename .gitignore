@@ -1,5 +1,11 @@
-.DS_Store
-pull_locales_login.rb
 vendor/
 node_modules/
+dist/
+build/
+
+pull_locales_login.rb
+
+.DS_Store
 *.old
+*.bak
+*.log

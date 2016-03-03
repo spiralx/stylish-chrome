@@ -1,0 +1,166 @@
+
+body
+  width 200px
+
+  & > div
+    border-bottom 1px solid black
+    padding-bottom 2px
+
+  & > .actions
+    margin-top 0.5em
+
+
+a,
+a:visited
+  color black
+
+
+body
+  &.blocked
+    #installed
+    #find-styles
+    #write-style
+      display none
+
+  &.blocked > div
+  & > div:last-of-type
+    border-bottom none
+
+  &:not(.blocked)
+    #unavailable
+      display none
+
+
+#unavailable
+  border none
+  display none
+
+
+#match
+  overflow-wrap break-word
+
+
+#no-styles
+  font-style italic
+
+
+.checker
+  display inline
+
+
+.style-name
+  cursor default
+  font-weight bold
+  margin-bottom 2px
+  display block
+
+
+.actions
+  font-size x-small
+
+
+.left-gutter
+  display table-cell
+  width 16px
+  vertical-align top
+
+  input
+    margin-top 0
+    margin-left 0
+
+
+.main-controls
+  display table-cell
+
+
+.entry
+  padding 0.5em 0
+  border-bottom 1px solid black
+
+  &:first-child
+    padding-top 0
+
+  &:last-child
+    border-bottom none
+
+
+#installed
+  margin-top 0.5em
+
+  &.disabled
+    .style-name
+      text-decoration line-through
+
+  .actions
+    a
+      margin-right 0.2em
+
+.actions > div:not(:last-child):not(#disable-all-wrapper)
+.actions > .main-controls > div:not(:last-child)
+#unavailable:not(:last-child)
+#unavailable + .actions
+  margin-bottom 0.75em
+
+.actions
+  input
+  label
+    vertical-align middle
+
+.enable
+.disable
+  display none
+
+
+#write-style-for
+  margin-right .6ex
+
+
+.write-style-link
+  margin-left .6ex
+
+  &::before
+    content "\00ad"
+
+  &::before
+  &::after
+    font-size x-small
+
+
+.breadcrumbs
+  & > .write-style-link
+    margin-left 0
+
+    &:nth-last-child(2)::after
+      content none
+
+    &:last-child::before
+        content "\200b/"
+
+  &:hover
+    a
+      color #bbb
+      text-decoration none
+
+  & > .write-style-link[subdomain]:not(:nth-last-child(2))
+    font-size 0
+
+  & > .write-style-link[subdomain]:not(:nth-last-child(2))::before
+    content attr(subdomain)
+
+  & > .write-style-link[subdomain]::after
+    content "."
+
+  & > .write-style-link[subdomain=""]
+    display none
+
+.breadcrumbs > .write-style-link:last-child:first-child::before
+.breadcrumbs > .write-style-link[subdomain=""] + .write-style-link::before
+  content none
+
+.breadcrumbs.url\(\) > .write-style-link,
+.breadcrumbs > .write-style-link:hover
+.breadcrumbs > .write-style-link:focus
+.breadcrumbs > .write-style-link:hover ~ .write-style-link[subdomain]
+.breadcrumbs > .write-style-link:focus ~ .write-style-link[subdomain]
+  color inherit
+  text-decoration underline

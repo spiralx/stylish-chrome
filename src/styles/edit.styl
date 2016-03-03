@@ -1,0 +1,323 @@
+
+@import _common
+
+@import _lint
+@import _help
+
+
+// ------------------------------------------------------------
+
+
+.aligned
+  display table-row
+
+  & > *:not(img)
+    display table-cell
+    margin-top 0.1rem
+    min-height 1.4rem
+
+
+
+input[type = "checkbox"]
+  margin-left 0.1rem
+
+
+#basic-info
+  margin-bottom 1rem
+
+
+#name
+  width 100%
+
+
+#basic-info-name
+  display flex
+  align-items center
+
+
+#url
+  margin-left 0.25rem
+  &:not([href^="http"])
+    display none
+
+
+#enabled
+  margin-left 0
+  vertical-align middle
+
+
+#enabled-label
+  vertical-align middle
+
+
+#actions
+  & > *
+    margin-right 0.5rem
+    margin-bottom 0.5rem
+
+
+#options
+  [type="number"]
+    max-width 2.5rem
+    text-align right
+  .option
+    & > *
+      padding-right 0.25rem
+
+
+// ------------------------------------------------------------
+
+#sections
+  counter-reset codebox
+  padding-left 18rem
+
+  h2
+    margin-top 0.5rem
+
+  & > div
+    margin 0.7rem
+    padding 1rem
+
+    &:not(:first-of-type)
+      border-top 2px solid black
+
+    &:only-of-type
+      .remove-section
+        display none
+
+    & > button
+      &:not(:first-of-type)
+        margin-left 0.2rem
+
+    & > label
+      &::after
+        counter-increment codebox
+        content counter(codebox)
+        margin-left 0.25rem
+
+
+.dirty
+  & > label
+    &::before
+      content "*"
+      font-weight bold
+
+
+// ------------------------------------------------------------
+
+.code
+  height 10rem
+  width 40rem
+
+
+.CodeMirror
+  border solid #CCC 1px
+
+.CodeMirror-lint-mark-warning
+  background none
+
+.CodeMirror-vscrollbar
+  margin-bottom 8px
+
+.CodeMirror-dialog
+  animation highlight 3s ease-out
+
+.CodeMirror-focused
+  outline -webkit-focus-ring-color auto 5px
+  outline-offset -2px
+
+.CodeMirror-search-field
+  width 10em
+
+.CodeMirror-jump-field
+  width 5em
+
+.CodeMirror-search-hint
+  color #888
+
+
+// ------------------------------------------------------------
+
+@keyframes highlight
+  from
+    background-color #ff9
+
+  to
+    background-color none
+
+
+.resize-grip
+  position absolute
+  display block
+  width 8px
+  height 8px
+  content " "
+  right 0
+  bottom 0
+  z-index 99
+  cursor n-resize
+  background linear-gradient(-45deg, transparent 2px, rgba(0,0,0,0.5) 2px, transparent 3px, transparent 4.5px, rgba(0,0,0,0.5) 5px, transparent 5.5px)
+
+
+.applies-to
+  display flex
+
+  label
+    flex auto
+    margin-top 0.2rem
+
+  ul
+    flex auto
+    flex-grow 99
+    margin 0
+    padding 0
+
+  li
+    display flex
+    list-style-type none
+    align-items center
+    margin-bottom 0.35rem
+
+    & > *:not(button)
+      flex auto
+      min-height 1.4rem
+      margin-left 0.35rem
+
+    .add-applies-to
+      visibility hidden
+      text-align left
+
+      &:first-child
+        margin-left 1rem
+
+    &:last-child
+      .add-applies-to
+        visibility visible
+
+    .applies-value
+      flex-grow 99
+      padding-left 0.2rem
+
+  img
+    vertical-align bottom
+
+
+// ------------------------------------------------------------
+
+.keymap-list
+  font-size 85%
+  line-height 1.0
+  border-spacing 0
+  word-break break-all
+
+  input
+    width 100%
+
+  tr
+    &:nth-child(odd)
+      background-color rgba(0, 0, 0, 0.07)
+
+  td
+    &:first-child
+      white-space nowrap
+      font-family monospace
+      padding-right 0.5rem
+
+
+// ------------------------------------------------------------
+
+.beautify-options
+  white-space nowrap
+  font-family monospace
+
+  div
+    float left
+
+  div[newline="true"]
+    & + div
+      clear left
+      span[indent]
+        padding-left 2rem
+
+  &:after
+    clear both
+    display block
+    content " "
+    height 1rem
+
+  span
+    font-weight bold
+
+  select
+    border none
+    background-color rgba(0, 0, 0, 0.05)
+
+
+// ------------------------------------------------------------
+
+@media (max-width: 737px)
+  h2
+    display none
+
+
+  #basic-info
+    display flex
+    align-items baseline
+
+    & > *
+      flex auto
+
+    & > *:first-child
+      flex-grow 99
+      display flex
+
+    & > *:not(:last-child)
+      margin-right 0.8rem
+
+    #name
+      width auto
+      flex-grow 99
+
+  #actions
+    margin-top 1rem
+    & > *
+      display inline-block
+
+  #options
+    -webkit-column-count 2
+    .aligned
+      & > *:not(img)
+        margin 1px 0 0 0
+        padding-right 0.4rem
+        vertical-align baseline
+        min-height 1.4rem
+    [type="number"]
+      text-align left
+      padding-left 0.2rem
+
+    #tabSize-label
+      position relative
+      top 0.2rem
+
+  .option
+    -webkit-column-break-inside avoid
+    label
+      line-height 1.25rem
+      margin 0
+
+  #sections
+    padding-left 0
+    & > div
+      padding 0
+    & > *:not(h2)
+      padding-left 0.4rem
+  .applies-type
+    width 30%
+
+@media(max-width: 500px)
+  #options
+    -webkit-column-count 1
+
+    #tabSize-label
+      position static
+

@@ -1,0 +1,179 @@
+extends _page
+
+
+block title
+  title(i18n-text='editTitle')
+
+
+block append styles
+  link(rel='stylesheet', href='../vendor/codemirror/lib/codemirror.css')
+  link(rel='stylesheet', href='../vendor/codemirror/addon/dialog/dialog.css')
+  link(rel='stylesheet', href='../vendor/codemirror/addon/search/matchesonscrollbar.css')
+  link(rel='stylesheet', href='../vendor/codemirror/addon/fold/foldgutter.css')
+  link(rel='stylesheet', href='../vendor/codemirror/addon/lint/lint.css')
+  link(rel='stylesheet', href='../vendor/codemirror/addon/hint/show-hint.css')
+  link#cm-theme(rel='stylesheet')
+  link(rel='stylesheet', href='styles/edit.css')
+
+
+block append templates
+  template(data-id='appliesTo')
+    li
+      select.applies-type.style-contributor(name='applies-type')
+        option(value='url', i18n-text='appliesUrlOption')
+        option(value='url-prefix', i18n-text='appliesUrlPrefixOption')
+        option(value='domain', i18n-text='appliesDomainOption')
+        option(value='regexp', i18n-text='appliesRegexpOption')
+      input.applies-value.style-contributor(name='applies-value')
+      button.remove-applies-to(i18n-text='appliesRemove')
+      button.add-applies-to(i18n-text='appliesAdd')
+
+  template(data-id='appliesToEverything')
+    li.applies-to-everything(i18n-html='appliesToEverything')
+      button.add-applies-to(i18n-text='appliesSpecify')
+
+  template(data-id='section')
+    div
+      label(i18n-text='sectionCode')
+      textarea.code
+      br
+      .applies-to
+        label(i18n-text='appliesLabel')
+          img.applies-to-help(src='../images/help.png', i18n-alt='helpAlt')
+        ul.applies-to-list
+      button.remove-section(i18n-text='sectionRemove')
+      button.add-section(i18n-text='sectionAdd')
+      button.beautify-section(i18n-text='styleBeautify')
+
+  template(data-id='find')
+    span(i18n-text='search')
+      | : 
+      input.CodeMirror-search-field(type='text')
+      span.CodeMirror-search-hint
+        | (
+        span(i18n-text='searchRegexp')
+        | )
+
+  template(data-id='replace')
+    span(i18n-text='replace')
+      | : 
+      input.CodeMirror-search-field(type='text')
+      span.CodeMirror-search-hint
+        | (
+        span(i18n-text='searchRegexp')
+        | )
+
+  template(data-id='replaceAll')
+    span(i18n-text='replaceAll')
+      | : 
+      input.CodeMirror-search-field(type='text')
+      span.CodeMirror-search-hint
+        | (
+        span(i18n-text='searchRegexp')
+        | )
+
+  template(data-id='replaceWith')
+    span(i18n-text='replaceWith')
+      | : 
+      input.CodeMirror-search-field(type='text')
+
+  template(data-id='replaceConfirm')
+    span(i18n-text='replace')
+      | ?
+      button(i18n-text='confirmYes')
+      button(i18n-text='confirmNo')
+      button(i18n-text='confirmStop')
+
+  template(data-id='jumpToLine')
+    span(i18n-text='editGotoLine')
+      | : 
+      input.CodeMirror-jump-field(type='text')
+
+
+block append scripts
+  script(src='../vendor/codemirror/lib/codemirror.js')
+  script(src='../vendor/codemirror/mode/css/css.js')
+  script(src='../vendor/codemirror/mode/stylus/stylus.js')
+  script(src='../vendor/codemirror/addon/edit/matchbrackets.js')
+  script(src='../vendor/codemirror/addon/selection/active-line.js')
+  script(src='../vendor/codemirror/addon/comment/comment.js')
+  script(src='../vendor/codemirror/addon/scroll/annotatescrollbar.js')
+  script(src='../vendor/codemirror/addon/dialog/dialog.js')
+  script(src='../vendor/codemirror/addon/search/matchesonscrollbar.js')
+  script(src='../vendor/codemirror/addon/search/searchcursor.js')
+  script(src='../vendor/codemirror/addon/search/search.js')
+  script(src='../vendor/codemirror/addon/fold/foldcode.js')
+  script(src='../vendor/codemirror/addon/fold/foldgutter.js')
+  script(src='../vendor/codemirror/addon/fold/brace-fold.js')
+  script(src='../vendor/codemirror/addon/fold/comment-fold.js')
+  script(src='../vendor/csslint/release/csslint.js')
+  script(src='../vendor/codemirror/addon/lint/lint.js')
+  script(src='../vendor/codemirror/addon/lint/css-lint.js')
+  script(src='../vendor/codemirror/addon/hint/show-hint.js')
+  script(src='../vendor/codemirror/addon/hint/css-hint.js')
+  script(src='../vendor/codemirror/keymap/sublime.js')
+  script(src='../vendor/codemirror/keymap/emacs.js')
+  script(src='../vendor/codemirror/keymap/vim.js')
+
+  script(src='scripts/edit.js')
+
+
+block content
+    section#basic-info
+      #basic-info-name
+        input#name.style-contributor(i18n-placeholder='styleMissingName')
+        a#url(target='_blank')
+          img(src='../images/world_go.png')
+      #basic-info-enabled
+        input#enabled.style-contributor(type='checkbox')
+        label#enabled-label(for='enabled', i18n-text='styleEnabledLabel')
+
+    section#actions
+      div
+        button#save-button(title='Ctrl-S', i18n-text='styleSaveLabel')
+        button#beautify(i18n-text='styleBeautify')
+        a(href='manage.html')
+          button#cancel-button(i18n-text='styleCancelEditLabel')
+      div
+        h2#mozilla-format-heading(i18n-text='styleMozillaFormatHeading')
+          img#to-mozilla-help(src='../images/help.png')
+        button#from-mozilla(i18n-text='importLabel')
+        button#to-mozilla(i18n-text='exportLabel')
+
+    section#options
+      h2#options-heading(i18n-text='optionsHeading')
+      .option
+        input(data-option='lineWrapping', id='editor.lineWrapping', type='checkbox')
+        label#lineWrapping-label(for='editor.lineWrapping', i18n-text='cm_lineWrapping')
+      .option
+        input(data-option='smartIndent', id='editor.smartIndent', type='checkbox')
+        label#smartIndent-label(for='editor.smartIndent', i18n-text='cm_smartIndent')
+      .option
+        input(data-option='indentWithTabs', id='editor.indentWithTabs', type='checkbox')
+        label#indentWithTabs-label(for='editor.indentWithTabs', i18n-text='cm_indentWithTabs')
+      .option.aligned
+        label#tabSize-label(for='editor.tabSize', i18n-text='cm_tabSize')
+        input(data-option='tabSize', id='editor.tabSize', type='number', min='0')
+      .option.aligned
+        label#keyMap-label(for='editor.keyMap', i18n-text='cm_keyMap')
+        select(data-option='keyMap', id='editor.keyMap')
+        img#keyMap-help(src='../images/help.png', i18n-alt='helpAlt')
+      .option.aligned
+        label#theme-label(for='editor.theme', i18n-text='cm_theme')
+        select(data-option='theme', id='editor.theme')
+
+    section#lint
+      h2(i18n-text='issues')
+        img#lint-help(src='../images/help.png', i18n-alt='helpAlt')
+      div
+
+  section#sections
+    h2
+      span#sections-heading(i18n-text='styleSectionsTitle')
+      img#sections-help(src='../images/help.png', i18n-alt='helpAlt')
+        
+  #help-popup
+    .title
+    .close-icon
+    .contents
+

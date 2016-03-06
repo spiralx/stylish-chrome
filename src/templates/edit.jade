@@ -6,12 +6,13 @@ block title
 
 
 block append styles
-  link(rel='stylesheet', href='../vendor/codemirror/lib/codemirror.css')
-  link(rel='stylesheet', href='../vendor/codemirror/addon/dialog/dialog.css')
-  link(rel='stylesheet', href='../vendor/codemirror/addon/search/matchesonscrollbar.css')
-  link(rel='stylesheet', href='../vendor/codemirror/addon/fold/foldgutter.css')
-  link(rel='stylesheet', href='../vendor/codemirror/addon/lint/lint.css')
-  link(rel='stylesheet', href='../vendor/codemirror/addon/hint/show-hint.css')
+  link(rel='stylesheet', href='vendor/codemirror/lib/codemirror.css')
+  link(rel='stylesheet', href='vendor/codemirror/addon/dialog/dialog.css')
+  link(rel='stylesheet', href='vendor/codemirror/addon/search/matchesonscrollbar.css')
+  link(rel='stylesheet', href='vendor/codemirror/addon/fold/foldgutter.css')
+  link(rel='stylesheet', href='vendor/codemirror/addon/lint/lint.css')
+  link(rel='stylesheet', href='vendor/codemirror/addon/hint/show-hint.css')
+  
   link#cm-theme(rel='stylesheet')
   link(rel='stylesheet', href='styles/edit.css')
 
@@ -39,7 +40,7 @@ block append templates
       br
       .applies-to
         label(i18n-text='appliesLabel')
-          img.applies-to-help(src='../images/help.png', i18n-alt='helpAlt')
+          img.applies-to-help(src='images/help.png', i18n-alt='helpAlt')
         ul.applies-to-list
       button.remove-section(i18n-text='sectionRemove')
       button.add-section(i18n-text='sectionAdd')
@@ -91,29 +92,29 @@ block append templates
 
 
 block append scripts
-  script(src='../vendor/codemirror/lib/codemirror.js')
-  script(src='../vendor/codemirror/mode/css/css.js')
-  script(src='../vendor/codemirror/mode/stylus/stylus.js')
-  script(src='../vendor/codemirror/addon/edit/matchbrackets.js')
-  script(src='../vendor/codemirror/addon/selection/active-line.js')
-  script(src='../vendor/codemirror/addon/comment/comment.js')
-  script(src='../vendor/codemirror/addon/scroll/annotatescrollbar.js')
-  script(src='../vendor/codemirror/addon/dialog/dialog.js')
-  script(src='../vendor/codemirror/addon/search/matchesonscrollbar.js')
-  script(src='../vendor/codemirror/addon/search/searchcursor.js')
-  script(src='../vendor/codemirror/addon/search/search.js')
-  script(src='../vendor/codemirror/addon/fold/foldcode.js')
-  script(src='../vendor/codemirror/addon/fold/foldgutter.js')
-  script(src='../vendor/codemirror/addon/fold/brace-fold.js')
-  script(src='../vendor/codemirror/addon/fold/comment-fold.js')
-  script(src='../vendor/csslint/release/csslint.js')
-  script(src='../vendor/codemirror/addon/lint/lint.js')
-  script(src='../vendor/codemirror/addon/lint/css-lint.js')
-  script(src='../vendor/codemirror/addon/hint/show-hint.js')
-  script(src='../vendor/codemirror/addon/hint/css-hint.js')
-  script(src='../vendor/codemirror/keymap/sublime.js')
-  script(src='../vendor/codemirror/keymap/emacs.js')
-  script(src='../vendor/codemirror/keymap/vim.js')
+  script(src='vendor/codemirror/lib/codemirror.js')
+  script(src='vendor/codemirror/mode/css/css.js')
+  script(src='vendor/codemirror/mode/stylus/stylus.js')
+  script(src='vendor/codemirror/addon/edit/matchbrackets.js')
+  script(src='vendor/codemirror/addon/selection/active-line.js')
+  script(src='vendor/codemirror/addon/comment/comment.js')
+  script(src='vendor/codemirror/addon/scroll/annotatescrollbar.js')
+  script(src='vendor/codemirror/addon/dialog/dialog.js')
+  script(src='vendor/codemirror/addon/search/matchesonscrollbar.js')
+  script(src='vendor/codemirror/addon/search/searchcursor.js')
+  script(src='vendor/codemirror/addon/search/search.js')
+  script(src='vendor/codemirror/addon/fold/foldcode.js')
+  script(src='vendor/codemirror/addon/fold/foldgutter.js')
+  script(src='vendor/codemirror/addon/fold/brace-fold.js')
+  script(src='vendor/codemirror/addon/fold/comment-fold.js')
+  script(src='vendor/csslint/release/csslint.js')
+  script(src='vendor/codemirror/addon/lint/lint.js')
+  script(src='vendor/codemirror/addon/lint/css-lint.js')
+  script(src='vendor/codemirror/addon/hint/show-hint.js')
+  script(src='vendor/codemirror/addon/hint/css-hint.js')
+  script(src='vendor/codemirror/keymap/sublime.js')
+  script(src='vendor/codemirror/keymap/emacs.js')
+  script(src='vendor/codemirror/keymap/vim.js')
 
   script(src='scripts/edit.js')
 
@@ -123,7 +124,7 @@ block content
       #basic-info-name
         input#name.style-contributor(i18n-placeholder='styleMissingName')
         a#url(target='_blank')
-          img(src='../images/world_go.png')
+          img(src='images/world_go.png')
       #basic-info-enabled
         input#enabled.style-contributor(type='checkbox')
         label#enabled-label(for='enabled', i18n-text='styleEnabledLabel')
@@ -136,7 +137,7 @@ block content
           button#cancel-button(i18n-text='styleCancelEditLabel')
       div
         h2#mozilla-format-heading(i18n-text='styleMozillaFormatHeading')
-          img#to-mozilla-help(src='../images/help.png')
+          img#to-mozilla-help(src='images/help.png')
         button#from-mozilla(i18n-text='importLabel')
         button#to-mozilla(i18n-text='exportLabel')
 
@@ -157,20 +158,20 @@ block content
       .option.aligned
         label#keyMap-label(for='editor.keyMap', i18n-text='cm_keyMap')
         select(data-option='keyMap', id='editor.keyMap')
-        img#keyMap-help(src='../images/help.png', i18n-alt='helpAlt')
+        img#keyMap-help(src='images/help.png', i18n-alt='helpAlt')
       .option.aligned
         label#theme-label(for='editor.theme', i18n-text='cm_theme')
         select(data-option='theme', id='editor.theme')
 
     section#lint
       h2(i18n-text='issues')
-        img#lint-help(src='../images/help.png', i18n-alt='helpAlt')
+        img#lint-help(src='images/help.png', i18n-alt='helpAlt')
       div
 
   section#sections
     h2
       span#sections-heading(i18n-text='styleSectionsTitle')
-      img#sections-help(src='../images/help.png', i18n-alt='helpAlt')
+      img#sections-help(src='images/help.png', i18n-alt='helpAlt')
         
   #help-popup
     .title

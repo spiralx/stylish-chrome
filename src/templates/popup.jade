@@ -1,0 +1,53 @@
+extends _page
+
+
+block append styles
+  link(rel='stylesheet', href='styles/popup.css')
+
+
+block append templates
+  template(data-id='style')
+    div
+      .left-gutter
+        input.checker(type='checkbox')
+
+      .main-controls
+        label.style-name
+        .actions
+          a.enable(href='#', i18n-text='enableStyleLabel')
+          a.disable(href='#', i18n-text='disableStyleLabel')
+          a.style-edit-link(href='edit.html?id=', i18n-text='editStyleLabel')
+          a.delete(href='#', i18n-text='deleteStyleLabel')
+
+
+block append scripts
+  script(src='scripts/popup.js')
+
+
+block content
+  #unavailable
+    .left-gutter
+
+    .main-controls
+      span#unavailable-message(i18n-text='stylishUnavailableForURL')
+
+  #installed
+
+  .actions
+    #disable-all-wrapper
+      .left-gutter
+        input#disableAll(type='checkbox')
+      .main-controls
+        label#disableAll-label(for='disableAll', i18n-text='disableAllStyles')
+
+    .left-gutter
+
+    .main-controls
+      #find-styles
+        a#find-styles-link(href='#', i18n-text='findStylesForSite')
+
+      #manage-styles
+        a#open-manage-link(href='manage.html', i18n-text='openManage')
+
+      #write-style
+        span#write-style-for(i18n-text='writeStyleFor')

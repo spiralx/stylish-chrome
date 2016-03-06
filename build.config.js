@@ -5,21 +5,33 @@ module.exports = {
     js:         'src/scripts/**/*.js',
     styl:       'src/styles/**/!(_)*.styl',
     jade:       'src/templates/**/!(_)*.jade',
-    assets:     'src/assets/**/*.*'
+    assets:     'src/assets/**/*.*',
+    vendor:     'vendor/**/*.*',
+    locales:    'src/_locales/**/*.*',
+    manifest:   'src/manifest.json'
   },
 
   watch: {
     js:         'src/scripts/**.js',
     styl:       'src/styles/**.styl',
     jade:       'src/templates/**.jade',
-    assets:     'src/assets/**.*'
+    assets:     'src/assets/**.*',
+    vendor:     'vendor/**.*',
+    locales:    'src/_locales/**.*'
+  },
+
+  build: {
+    js:         'build/scripts',
+    css:        'build/styles',
+    html:       'build',
+    assets:     'build',
+    vendor:     'build/vendor',
+    locales:    'build/_locales',
+    dir:        'build'
   },
 
   dist: {
-    js:         'dist/js',
-    css:        'dist/css',
-    html:       'dist',
-    assets:     'dist'
+    dir:        'dist'
   },
 
   jade: {
@@ -38,5 +50,9 @@ module.exports = {
 
   babel: {
     presets: [ 'es2015' ]
+  },
+
+  chromeManifest: {
+    buildnumber: true
   }
 }

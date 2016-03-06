@@ -1,0 +1,67 @@
+{
+  "manifest_version": 2,
+  "name": "Stylish",
+  "version": "2.0.0",
+  "description": "__MSG_description__",
+  "homepage_url": "https://userstyles.org",
+  "icons": {
+    "16": "images/16.png",
+    "48": "images/48.png",
+    "128": "images/128.png"
+  },
+  "permissions": [
+    "tabs",
+    "webNavigation",
+    "contextMenus",
+    "http://userstyles.org/",
+    "https://userstyles.org/"
+  ],
+  "background": {
+    "scripts": [
+      "scripts/storage.js",
+      "scripts/messaging.js",
+      "scripts/background.js"
+    ]
+  },
+  "options_page": "manage.html",
+  "commands": {
+    "openManage": {
+      "description": "__MSG_openManage__"
+    },
+    "styleDisableAll": {
+      "description": "__MSG_disableAllStyles__"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_start",
+      "all_frames": true,
+      "js": [
+        "scripts/apply.js"
+      ]
+    },
+    {
+      "matches": [
+        "http://userstyles.org/*",
+        "https://userstyles.org/*"
+      ],
+      "run_at": "document_end",
+      "all_frames": false,
+      "js": [
+        "scripts/install.js"
+      ]
+    }
+  ],
+  "browser_action": {
+    "default_icon": {
+      "19": "images/19w.png",
+      "38": "images/38w.png"
+    },
+    "default_title": "Stylish",
+    "default_popup": "popup.html"
+  },
+  "default_locale": "en"
+}

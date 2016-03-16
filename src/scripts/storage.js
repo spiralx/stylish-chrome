@@ -16,6 +16,8 @@ function getDatabase(ready, error) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function enableStyle(id, enabled) {
   getDatabase(function(db) {
     db.transaction(function (t) {
@@ -29,6 +31,9 @@ function enableStyle(id, enabled) {
     });
   });
 }
+
+
+// ----------------------------------------------------------------------------
 
 function deleteStyle(id) {
   getDatabase(function(db) {
@@ -45,6 +50,8 @@ function deleteStyle(id) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function reportError() {
   for (i in arguments) {
     if ("message" in arguments[i]) {
@@ -54,6 +61,8 @@ function reportError() {
   }
 }
 
+
+// ----------------------------------------------------------------------------
 
 function getDomains(url) {
   if (url.indexOf("file:") == 0) {
@@ -69,27 +78,22 @@ function getDomains(url) {
 }
 
 
-function getType(o) {
-  if (typeof o == "undefined" || typeof o == "string") {
-    return typeof o;
-  }
-  if (o instanceof Array) {
-    return "array";
-  }
-  throw "Not supported - " + o;
-}
-
+// ----------------------------------------------------------------------------
 
 function isCheckbox(el) {
   return el.nodeName.toLowerCase() == "input" && "checkbox" == el.type.toLowerCase();
 }
 
 
+// ----------------------------------------------------------------------------
+
 function changePref(event) {
   var el = event.target;
   prefs.setPref(el.id, isCheckbox(el) ? el.checked : el.value);
 }
 
+
+// ----------------------------------------------------------------------------
 
 // Accepts a hash of pref name to default value
 function loadPrefs(prefs) {
@@ -105,6 +109,9 @@ function loadPrefs(prefs) {
     el.addEventListener("change", changePref);
   }
 }
+
+
+// ----------------------------------------------------------------------------
 
 function getCodeMirrorThemes(callback) {
   chrome.runtime.getPackageDirectoryEntry(function(rootDir) {
@@ -126,6 +133,8 @@ function getCodeMirrorThemes(callback) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function sessionStorageHash(name) {
   var hash = {
     value: {},
@@ -140,6 +149,8 @@ function sessionStorageHash(name) {
   return hash;
 }
 
+
+// ----------------------------------------------------------------------------
 
 function shallowCopy(obj) {
   return typeof obj == "object" ? shallowMerge(obj, {}) : obj;
@@ -178,7 +189,7 @@ var stylishDb = null;
 
 
 var prefs = {
-// NB: localStorage["not_key"] is undefined, localStorage.getItem("not_key") is null
+  // NB: localStorage["not_key"] is undefined, localStorage.getItem("not_key") is null
 
   // defaults
   "openEditInWindow": false, // new editor opens in a own browser window
@@ -248,5 +259,3 @@ var prefs = {
   },
   removePref: function(key) { setPref(key, undefined) }
 };
-
-

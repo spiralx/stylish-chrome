@@ -1,4 +1,6 @@
+'use strict'
 
+// ----------------------------------------------------------------------------
 
 function t(key, params) {
   var s = chrome.i18n.getMessage(key, params)
@@ -14,6 +16,8 @@ function o(key) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function tE(id, key, attr, esc) {
   if (attr) {
     document.getElementById(id).setAttribute(attr, t(key));
@@ -26,6 +30,8 @@ function tE(id, key, attr, esc) {
   }
 }
 
+
+// ----------------------------------------------------------------------------
 
 function tHTML(html) {
   var node = document.createElement("div")
@@ -113,6 +119,8 @@ function i18niseAllNodes(root) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function i18nise(elem) {
   const key = elem && (elem.dataset.text || elem.dataset.placeholder)
 
@@ -132,12 +140,14 @@ function i18nise(elem) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 const _templates = new Map()
 
 document.addEventListener("DOMContentLoaded", function() {
   i18niseAllNodes()
 
-  Array.from(document.querySelectorAll('template')).forEach(tmplNode => {
-    templates.set(tmplNode.dataset.id, i18niseAllNodes(tmplNode.content))
+  Array.from(document.querySelectorAll('template'), node => {
+    _templates.set(node.dataset.id, i18niseAllNodes(node.content))
   })
 })

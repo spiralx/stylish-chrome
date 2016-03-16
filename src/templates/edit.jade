@@ -125,6 +125,7 @@ block content
         input#name.style-contributor(i18n-placeholder='styleMissingName')
         a#url(target='_blank')
           img(src='images/world_go.png')
+          
       #basic-info-enabled
         input#enabled.style-contributor(type='checkbox')
         label#enabled-label(for='enabled', i18n-text='styleEnabledLabel')
@@ -133,32 +134,41 @@ block content
       div
         button#save-button(title='Ctrl-S', i18n-text='styleSaveLabel')
         button#beautify(i18n-text='styleBeautify')
+        
         a(href='manage.html')
           button#cancel-button(i18n-text='styleCancelEditLabel')
+          
       div
         h2#mozilla-format-heading(i18n-text='styleMozillaFormatHeading')
           img#to-mozilla-help(src='images/help.png')
+          
         button#from-mozilla(i18n-text='importLabel')
         button#to-mozilla(i18n-text='exportLabel')
 
     section#options
       h2#options-heading(i18n-text='optionsHeading')
+      
       .option
         input(data-option='lineWrapping', id='editor.lineWrapping', type='checkbox')
         label#lineWrapping-label(for='editor.lineWrapping', i18n-text='cm_lineWrapping')
+        
       .option
         input(data-option='smartIndent', id='editor.smartIndent', type='checkbox')
         label#smartIndent-label(for='editor.smartIndent', i18n-text='cm_smartIndent')
+        
       .option
         input(data-option='indentWithTabs', id='editor.indentWithTabs', type='checkbox')
         label#indentWithTabs-label(for='editor.indentWithTabs', i18n-text='cm_indentWithTabs')
+        
       .option.aligned
         label#tabSize-label(for='editor.tabSize', i18n-text='cm_tabSize')
         input(data-option='tabSize', id='editor.tabSize', type='number', min='0')
+        
       .option.aligned
         label#keyMap-label(for='editor.keyMap', i18n-text='cm_keyMap')
         select(data-option='keyMap', id='editor.keyMap')
         img#keyMap-help(src='images/help.png', i18n-alt='helpAlt')
+        
       .option.aligned
         label#theme-label(for='editor.theme', i18n-text='cm_theme')
         select(data-option='theme', id='editor.theme')
@@ -166,6 +176,7 @@ block content
     section#lint
       h2(i18n-text='issues')
         img#lint-help(src='images/help.png', i18n-alt='helpAlt')
+        
       div
 
   section#sections
@@ -177,4 +188,3 @@ block content
     .title
     .close-icon
     .contents
-

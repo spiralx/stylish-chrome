@@ -1,4 +1,6 @@
+'use strict'
 
+// ----------------------------------------------------------------------------
 
 function showStyles(styles) {
   if (!styles) { // Chrome is starting up
@@ -20,6 +22,8 @@ function showStyles(styles) {
   }
 }
 
+
+// ----------------------------------------------------------------------------
 
 function createStyleElement(style) {
   var e = template.style.cloneNode(true);
@@ -154,11 +158,15 @@ function createStyleElement(style) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function enable(event, enabled) {
   var id = getId(event);
   enableStyle(id, enabled);
 }
 
+
+// ----------------------------------------------------------------------------
 
 function doDelete() {
   if (!confirm(t('deleteStyleConfirm'))) {
@@ -169,10 +177,14 @@ function doDelete() {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function getId(event) {
   return getStyleElement(event).getAttribute("style-id");
 }
 
+
+// ----------------------------------------------------------------------------
 
 function getStyleElement(event) {
   var e = event.target;
@@ -185,6 +197,8 @@ function getStyleElement(event) {
   return null;
 }
 
+
+// ----------------------------------------------------------------------------
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
   switch (request.method) {
@@ -201,6 +215,8 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 
+// ----------------------------------------------------------------------------
+
 function handleUpdate(style) {
   var element = createStyleElement(style);
   installed.replaceChild(element, installed.querySelector("[style-id='" + style.id + "']"));
@@ -212,15 +228,21 @@ function handleUpdate(style) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function handleDelete(id) {
   installed.removeChild(installed.querySelector("[style-id='" + id + "']"));
 }
 
 
+// ----------------------------------------------------------------------------
+
 function doCheckUpdate(event) {
   checkUpdate(getStyleElement(event));
 }
 
+
+// ----------------------------------------------------------------------------
 
 function applyUpdateAll() {
   var btnApply = document.getElementById("apply-all-updates");
@@ -235,6 +257,8 @@ function applyUpdateAll() {
   });
 }
 
+
+// ----------------------------------------------------------------------------
 
 function checkUpdateAll() {
   var btnCheck = document.getElementById("check-all-updates");
@@ -268,6 +292,8 @@ function checkUpdateAll() {
   });
 }
 
+
+// ----------------------------------------------------------------------------
 
 function checkUpdate(element, callback) {
   element.querySelector(".update-note").innerHTML = t('checkingForUpdate');
@@ -322,12 +348,16 @@ function checkUpdate(element, callback) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function checkUpdateFullCode(url, forceUpdate, successCallback, failureCallback) {
   download(url, function(responseText) {
     successCallback(forceUpdate, JSON.parse(responseText));
   }, failureCallback);
 }
 
+
+// ----------------------------------------------------------------------------
 
 function checkUpdateMd5(originalMd5, md5Url, successCallback, failureCallback) {
   download(md5Url, function(responseText) {
@@ -339,6 +369,8 @@ function checkUpdateMd5(originalMd5, md5Url, successCallback, failureCallback) {
   }, failureCallback);
 }
 
+
+// ----------------------------------------------------------------------------
 
 function download(url, successCallback, failureCallback) {
   var xhr = new XMLHttpRequest();
@@ -363,6 +395,8 @@ function download(url, successCallback, failureCallback) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function handleNeedsUpdate(needsUpdate, id, serverJson) {
   var e = document.querySelector("[style-id='" + id + "']");
   e.className = e.className.replace("checking-update", "");
@@ -383,6 +417,8 @@ function handleNeedsUpdate(needsUpdate, id, serverJson) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function doUpdate(event) {
   var element = getStyleElement(event);
 
@@ -397,6 +433,8 @@ function doUpdate(event) {
   chrome.extension.sendMessage(updatedCode);
 }
 
+
+// ----------------------------------------------------------------------------
 
 function codeIsEqual(a, b) {
   if (a.length != b.length) {
@@ -424,6 +462,21 @@ function codeIsEqual(a, b) {
   return true;
 }
 
+
+// ----------------------------------------------------------------------------
+
+function getType(o) {
+  if (typeof o == "undefined" || typeof o == "string") {
+    return typeof o;
+  }
+  if (o instanceof Array) {
+    return "array";
+  }
+  throw "Not supported - " + o
+}
+
+
+// ----------------------------------------------------------------------------
 
 function jsonEquals(a, b, property) {
   var aProp = a[property], typeA = getType(aProp);
@@ -461,6 +514,8 @@ function jsonEquals(a, b, property) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function searchStyles(immediately) {
   function doSearch() {
     chrome.extension.sendMessage({method: "getStyles"}, function(styles) {
@@ -472,6 +527,9 @@ function searchStyles(immediately) {
       });
     });
   }
+
+
+  // ----------------------------------------------------------------------------
 
   function isMatchingStyle(style) {
     return style.sections.some(function(section) {
@@ -485,9 +543,15 @@ function searchStyles(immediately) {
     });
   }
 
+
+  // ----------------------------------------------------------------------------
+
   function isMatchingText(text) {
     return text.toLocaleLowerCase().indexOf(query) >= 0;
   }
+
+
+  // ----------------------------------------------------------------------------
 
   var query = document.getElementById("search").value.toLocaleLowerCase();
 
@@ -507,10 +571,14 @@ function searchStyles(immediately) {
 }
 
 
+// ----------------------------------------------------------------------------
+
 function onFilterChange (className, event) {
   installed.classList.toggle(className, event.target.checked);
 }
 
+
+// ----------------------------------------------------------------------------
 
 function initFilter(className, node) {
   node.addEventListener("change", onFilterChange.bind(undefined, className), false);
@@ -548,7 +616,8 @@ document.addEventListener("DOMContentLoaded", function() {
     "manage.onlyEdited": false,
     "show-badge": true,
     "popup.stylesFirst": true
-  });
-  initFilter("enabled-only", document.getElementById("manage.onlyEnabled"));
-  initFilter("edited-only", document.getElementById("manage.onlyEdited"));
-});
+  })
+
+  initFilter("enabled-only", document.getElementById("manage.onlyEnabled"))
+  initFilter("edited-only", document.getElementById("manage.onlyEdited"))
+})
